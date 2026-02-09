@@ -11,9 +11,9 @@ from insightface.app import FaceAnalysis
 DB_CONFIG = {
     "host": "localhost",
     "port": 5432,
-    "dbname": "SampleDatabase",
+    "dbname": "BcsFaceFinder",
     "user": "postgres",
-    "password": "blinkdatabase"
+    "password": "blinkpostgresql"  # if you set one
 }
 
 def get_db():
@@ -40,7 +40,7 @@ def index_faces():
 
     # Get NAS images that are NOT indexed yet
     cursor.execute("""
-        SELECT nf.id, nf.full_path
+        SELECT nf.id, nf.file_path
         FROM nas_files nf
         LEFT JOIN face_embeddings fe ON fe.file_id = nf.id
         WHERE fe.id IS NULL
@@ -54,7 +54,7 @@ def index_faces():
 
     for file in files:
         file_id = file["id"]
-        path = file["full_path"]
+        path = file["file_path"]
 
         if not os.path.exists(path):
             print(f"❌ Missing file: {path}")
