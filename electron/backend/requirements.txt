@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-psycopg2-binary
-numpy
-opencv-python
-insightface
-onnxruntime
-python-multipart
-
