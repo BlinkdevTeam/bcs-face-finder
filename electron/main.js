@@ -2,57 +2,65 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
 
-let pyProcess = null;
+let backendProcess = null;
+let win = null;
 
-function startPythonBackend() {
-  const pythonPath = process.platform === "win32" ? "python" : "python3";
+/* ===============================
+   Resolve backend directory
+   =============================== */
+function getBackendDir() {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, "backend")
+    : path.join(__dirname, "backend");
+}
 
-  const backendPath = path.join(__dirname, "../backend/api.py");
+/* ===============================
+   Start Python backend silently
+   =============================== */
+function startBackend() {
+  const backendDir = getBackendDir();
+  const pythonCmd = process.platform === "win32" ? "python" : "python3";
 
-  pyProcess = spawn(pythonPath, [backendPath], {
-    cwd: path.join(__dirname, "../backend"),
-    env: { ...process.env },
-  });
-
-  pyProcess.stdout.on("data", (data) => {
-    console.log(`[PYTHON] ${data}`);
-  });
-
-  pyProcess.stderr.on("data", (data) => {
-    console.error(`[PYTHON ERROR] ${data}`);
+  backendProcess = spawn(pythonCmd, ["api.py"], {
+    cwd: backendDir,
+    stdio: "ignore",   // prevent terminal window
+    detached: false,
   });
 }
 
+/* ===============================
+   Create the main window
+   =============================== */
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 1400,
+  win = new BrowserWindow({
+    width: 1300,
     height: 900,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
       nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: false, // IMPORTANT for packaged builds
     },
   });
 
-  win.loadFile(path.join(__dirname, "../frontend/dist/index.html"));
+  const indexPath = app.isPackaged
+    ? path.join(process.resourcesPath, "frontend", "dist", "index.html")
+    : path.join(__dirname, "frontend", "dist", "index.html");
+
+  win.loadFile(indexPath);
 }
 
+/* ===============================
+   App ready
+   =============================== */
 app.whenReady().then(() => {
-  startPythonBackend();
-
-  // Wait 1 second then load UI
-  setTimeout(() => {
-    createWindow();
-  }, 1200);
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+  startBackend();
+  setTimeout(createWindow, 1200); // give backend time to boot
 });
 
-app.on("window-all-closed", () => {
-  if (pyProcess) {
-    pyProcess.kill();
-  }
-  if (process.platform !== "darwin") app.quit();
+/* ===============================
+   Cleanup backend when quitting
+   =============================== */
+app.on("before-quit", () => {
+  if (backendProcess) backendProcess.kill();
 });

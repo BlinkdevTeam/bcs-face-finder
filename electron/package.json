@@ -23,20 +23,23 @@
     "appId": "com.bcs.facefinder",
     "productName": "BCS Face Finder",
 
+    "directories": {
+      "buildResources": "electron"
+    },
+
     "files": [
-      "main.js",
-      "preload.js",
-      "../backend/**",
-      "../frontend/dist/**"
+      "**/*",
+      "backend/**/*",
+      "frontend/dist/**/*"
     ],
 
     "extraResources": [
       {
-        "from": "../backend",
+        "from": "backend",
         "to": "backend"
       },
       {
-        "from": "../frontend/dist",
+        "from": "frontend/dist",
         "to": "frontend/dist"
       }
     ],
