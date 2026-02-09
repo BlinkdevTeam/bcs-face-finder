@@ -1,76 +1,21 @@
 {
-  "name": "bcs-face-finder",
+  "name": "bcs-face-finder-frontend",
   "version": "1.0.0",
-  "productName": "BCS Face Finder",
-  "description": "Face recognition and NAS scanning desktop app.",
-  "main": "main.js",
-  "author": "Blink Creative Studio",
-  "license": "MIT",
-
+  "private": true,
   "scripts": {
-    "start": "electron .",
-    "build:mac": "electron-builder --mac",
-    "build:win": "electron-builder --win"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.13.3"
-  },
-
-  "dependencies": {},
-
-  "build": {
-    "appId": "com.bcs.facefinder",
-    "productName": "BCS Face Finder",
-
-    "directories": {
-      "output": "dist"
-    },
-
-    "files": [
-      "**/*",
-      "!dist",
-      {
-        "from": "../frontend/dist",
-        "to": "frontend"
-      },
-      {
-        "from": "../backend",
-        "to": "backend"
-      },
-      {
-        "from": "../local-db",
-        "to": "local-db"
-      }
-    ],
-
-    "extraResources": [
-      {
-        "from": "../backend",
-        "to": "backend"
-      },
-      {
-        "from": "../local-db",
-        "to": "local-db"
-      }
-    ],
-
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["arm64"]
-        }
-      ],
-      "artifactName": "BCS-Face-Finder-${version}-${arch}.dmg",
-      "icon": "build/icon.icns"
-    },
-
-    "win": {
-      "target": "nsis",
-      "artifactName": "BCS-Face-Finder-${version}-win.${ext}",
-      "icon": "build/icon.ico"
-    }
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "vite": "^5.0.0"
   }
 }

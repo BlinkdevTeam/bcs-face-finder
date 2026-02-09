@@ -1,10 +1,10 @@
 const Folders = ({ results }) => {
   // Group results by folder_path
   const groupedResults = results.reduce((acc, item) => {
-    if (!acc[item.folder_path]) {
-      acc[item.folder_path] = [];
+    if (!acc[item.file_path]) {
+      acc[item.file_path] = [];
     }
-    acc[item.folder_path].push(item);
+    acc[item.file_path].push(item);
     return acc;
   }, {});
 
